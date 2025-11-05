@@ -387,6 +387,7 @@ nav a.active{color:var(--accent)}
 <button id="backToTop">↑</button>
 
 <script>
+// Wallpapers data
 const WALLPAPERS = [
   {id:101,title:'Misty Mountain Peak',category:'nature',tags:['mountain','mist','fog','landscape'],colors:['blue','gray'],sizes:{original:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920','1080p':'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1280',mobile:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=720'},downloads:1245,featured:true,date:'2025-01-20',trending:true},
   {id:102,title:'Cyberpunk City Nights',category:'city',tags:['night','neon','cyberpunk','urban'],colors:['pink','purple','blue'],sizes:{original:'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=1920','1080p':'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=1280',mobile:'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=720'},downloads:3240,featured:true,date:'2025-01-19',trending:true},
@@ -402,7 +403,10 @@ const WALLPAPERS = [
   {id:112,title:'Northern Lights Magic',category:'nature',tags:['aurora','northern lights','nature','sky'],colors:['green','blue','purple'],sizes:{original:'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=1920','1080p':'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=1280',mobile:'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=720'},downloads:2934,featured:true,date:'2025-01-09',trending:true}
 ];
 
+// Configuration
 const ITEMS_PER_PAGE = 12;
+
+// State
 const state = {
   filtered: [],
   visibleCount: ITEMS_PER_PAGE,
@@ -428,17 +432,15 @@ const escapeHtml = text => {
 };
 
 function hidePreloader(){
-  const p = $('#preloader');
+  const p = getElement('#preloader');
   if(p){
-    setTimeout(() => {
-      p.style.opacity = '0';
-      setTimeout(() => p.style.display = 'none', 300);
-    }, 600);
+    p.style.opacity = '0';
+    setTimeout(() => p.style.display = 'none', 300);
   }
 }
 
 function toast(msg, type = 'default'){
-  const existing = $('.toast');
+  const existing = getElement('.toast');
   if(existing) existing.remove();
   const d = document.createElement('div');
   d.className = `toast ${type}`;
@@ -476,16 +478,16 @@ function toggleFavorite(id){
 }
 
 function updateFavCount(){
-  const count = $('#favCount');
+  const count = getElement('#favCount');
   if(count) count.textContent = getFavorites().length;
 }
 
 function updateStats(){
   const featured = state.filtered.filter(w => w.featured).length;
   const trending = state.filtered.filter(w => w.trending).length;
-  $('#statViewing').textContent = state.filtered.length;
-  $('#statFeatured').textContent = featured;
-  $('#statTrending').textContent = trending;
+  getElement('#statViewing').textContent = state.filtered.length;
+  getElement('#statFeatured').textContent = featured;
+  getElement('#statTrending').textContent = trending;
 }
 
 function isNew(w){
@@ -593,7 +595,7 @@ function createCard(item){
 }
 
 function renderGallery(reset = true){
-  const grid = $('#galleryGrid');
+  const grid = getElement('#galleryGrid');
   if(!grid) return;
   
   if(reset){
@@ -607,7 +609,7 @@ function renderGallery(reset = true){
       <p>Try adjusting your filters</p>
       <button class="header-btn" onclick="resetFilters()" style="margin-top:20px">🔄 Reset Filters</button>
     </div>`;
-    $('#loadMoreBtn').style.display = 'none';
+    getElement('#loadMoreBtn').style.display = 'none';
     return;
   }
   
@@ -626,7 +628,7 @@ function renderGallery(reset = true){
 }
 
 function updateLoadMoreBtn(){
-  const btn = $('#loadMoreBtn');
+  const btn = getElement('#loadMoreBtn');
   if(!btn) return;
   if(state.visibleCount >= state.filtered.length){
     btn.style.display = 'none';
@@ -644,45 +646,45 @@ function openLightbox(id){
 }
 
 function showLightbox(obj){
-  const lightbox = $('#lightbox');
+  const lightbox = getElement('#lightbox');
   if(!lightbox) return;
   
-  $('#lbImage').src = obj.sizes.original;
-  $('#lbTitle').textContent = obj.title;
-  $('#lbCategory').textContent = obj.category;
-  $('#lbDownloads').textContent = (obj.downloads || 0).toLocaleString();
+  getElement('#lbImage').src = obj.sizes.original;
+  getElement('#lbTitle').textContent = obj.title;
+  getElement('#lbCategory').textContent = obj.category;
+  getElement('#lbDownloads').textContent = (obj.downloads || 0).toLocaleString();
   
-  const tagsEl = $('#lbTags');
+  const tagsEl = getElement('#lbTags');
   if(tagsEl){
     tagsEl.innerHTML = obj.tags ? 
       obj.tags.map(tag => `<span class="lb-tag">#${escapeHtml(tag)}</span>`).join('') : '';
   }
   
-  const paletteEl = $('#lbColorPalette');
+  const paletteEl = getElement('#lbColorPalette');
   if(paletteEl && obj.colors){
     paletteEl.innerHTML = obj.colors.map(c => 
       `<div style="width:32px;height:32px;border-radius:8px;background:${c};border:2px solid var(--border)" title="${c}"></div>`
     ).join('');
   }
   
-  $('#downloadBtn').onclick = () => {
-    const size = $('#sizeSelect')?.value || 'original';
+  getElement('#downloadBtn').onclick = () => {
+    const size = getElement('#sizeSelect')?.value || 'original';
     const url = obj.sizes[size] || obj.sizes.original;
     triggerDownload(url, `${obj.title.replace(/\s+/g,'_')}_${size}.jpg`);
     toast('⬇ Download started!', 'success');
   };
   
-  $('#shareBtn').onclick = () => shareWallpaper(obj);
+  getElement('#shareBtn').onclick = () => shareWallpaper(obj);
   
   lightbox.classList.add('show');
   document.body.style.overflow = 'hidden';
 }
 
 function closeLightbox(){
-  const lightbox = $('#lightbox');
+  const lightbox = getElement('#lightbox');
   if(!lightbox) return;
   lightbox.classList.remove('show');
-  $('#lbImage').src = '';
+  getElement('#lbImage').src = '';
   document.body.style.overflow = '';
 }
 
@@ -861,20 +863,20 @@ $('#wotdBtn')?.addEventListener('click', () => {
 
 // Keyboard shortcuts
 document.addEventListener('keydown', e => {
-  if($('#lightbox')?.classList.contains('show')){
+  if(getElement('#lightbox')?.classList.contains('show')){
     if(e.key === 'Escape') closeLightbox();
     if(e.key === 'ArrowRight') navigate(1);
     if(e.key === 'ArrowLeft') navigate(-1);
     if(e.key === 'd' || e.key === 'D'){
       e.preventDefault();
-      $('#downloadBtn')?.click();
+      getElement('#downloadBtn')?.click();
     }
     return;
   }
   
   if(e.key === '/' || (e.key === 'k' && (e.metaKey || e.ctrlKey))){
     e.preventDefault();
-    $('#searchInput')?.focus();
+    getElement('#searchInput')?.focus();
   }
   
   if(e.key === 'r' || e.key === 'R'){
@@ -888,12 +890,12 @@ document.addEventListener('keydown', e => {
   if(e.key === 't' || e.key === 'T'){
     if(document.activeElement?.tagName !== 'INPUT'){
       e.preventDefault();
-      $('#themeToggle')?.click();
+      getElement('#themeToggle')?.click();
     }
   }
   
   if(e.key === 'Escape'){
-    $('#shortcutsModal')?.classList.remove('show');
+    getElement('#shortcutsModal')?.classList.remove('show');
   }
 });
 
