@@ -1,0 +1,519 @@
+<!-- A DREAM WALLPAPERS — All-in-one (HTML + CSS + JS) with external JSON fallback -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A Dream Wallpapers — 4K & Mobile</title>
+
+<!-- Fonts: fancy + readable -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Pacifico&display=swap" rel="stylesheet">
+
+<meta name="description" content="A Dream Wallpapers — free curated 4K & mobile wallpapers. Save favorites, download multi-size, share, and browse by color & category.">
+
+<style>
+/* =========================
+   THEME VARIABLES (light/dark)
+   ========================= */
+:root{
+  --bg:#06060a; --surface:#0f1115; --muted:#a9a9b0; --accent:#ffb400; --accent-2:#ff6a88;
+  --glass: rgba(255,255,255,0.04); --text:#f5f5f7; --card-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  --fancy: "Playfair Display", serif; --ui: "Poppins", system-ui, -apple-system;
+}
+body.light {
+  --bg:#ffffff; --surface:#ffffff; --muted:#505050; --text:#111111; --glass: rgba(0,0,0,0.03); --card-shadow: 0 8px 30px rgba(0,0,0,0.06);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family:var(--ui); background:var(--bg); color:var(--text);
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  transition: background .25s ease, color .25s ease;
+  overflow-x:hidden;
+}
+
+/* PRELOADER */
+#preloader{position:fixed; inset:0; display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:99999}
+#preloader .spinner{width:64px;height:64px;border-radius:50%;border:6px solid rgba(255,255,255,0.06);border-top:6px solid var(--accent);animation:spin 0.9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* HEADER */
+header{
+  position:sticky; top:0; z-index:999; display:flex; justify-content:space-between; align-items:center;
+  gap:12px; padding:12px 20px; background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent); backdrop-filter: blur(6px);
+  border-bottom:1px solid rgba(255,255,255,0.03);
+}
+.logo{font-family:'Pacifico',cursive; font-size:24px; letter-spacing:0.3px; color:var(--text)}
+.logo-sub{font-family:var(--fancy); font-weight:600; margin-left:8px; font-size:12px; color:var(--muted)}
+.header-left{display:flex; align-items:center; gap:12px}
+nav a { color:var(--muted); margin:0 8px; font-weight:600; font-size:14px }
+nav a:hover{ color:var(--text) }
+.header-actions{display:flex; align-items:center; gap:8px}
+.header-btn{padding:8px 14px; border-radius:8px; background:var(--accent); color:#000; font-weight:700; border:none; cursor:pointer; transition:transform .18s, box-shadow .18s}
+.header-btn:hover{ transform:translateY(-3px); box-shadow:0 8px 24px rgba(255,180,0,0.12) }
+
+/* HERO */
+.hero{padding:44px 18px 16px; text-align:center}
+.hero h1{font-family:var(--fancy); font-size:44px; margin:0; line-height:1; background:linear-gradient(90deg,var(--accent),var(--accent-2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent}
+.hero p{color:var(--muted); margin-top:10px; font-size:16px}
+
+/* CONTROLS */
+.controls{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; padding:18px 14px}
+.controls input[type="search"], .controls select, .controls input[type="email"]{
+  padding:10px 12px; border-radius:10px; border:none; outline:none; min-width:160px; background:var(--surface); color:var(--text);
+  box-shadow:var(--card-shadow);
+}
+.controls button { padding:10px 12px; border-radius:10px; border:none; cursor:pointer; background:var(--accent); color:#000; font-weight:700}
+
+/* CONTAINER & GRID */
+.container{max-width:1250px; margin:0 auto; padding:10px 16px 80px}
+.gallery-grid{display:grid; grid-template-columns:repeat(1,1fr); gap:14px}
+@media(min-width:640px){ .gallery-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:900px){ .gallery-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1200px){ .gallery-grid{grid-template-columns:repeat(4,1fr)}}
+
+/* CARD */
+.card{position:relative; overflow:hidden; border-radius:12px; background:var(--surface); box-shadow:var(--card-shadow); transition:transform .36s cubic-bezier(.2,.9,.3,1)}
+.card img{width:100%; height:auto; display:block; transition:transform .6s ease}
+.card:hover{ transform:translateY(-6px) }
+.card:hover img{ transform:scale(1.06) }
+.card .meta{position:absolute; left:10px; top:10px; background:var(--glass); padding:6px 8px; border-radius:8px; font-size:13px; color:var(--muted)}
+.card .actions{position:absolute; right:10px; bottom:10px; display:flex; gap:8px}
+.icon-btn{background:rgba(0,0,0,0.45); color:#fff; border:none; padding:8px 10px; border-radius:8px; cursor:pointer; font-weight:600}
+.icon-btn:hover{transform:translateY(-4px); background:rgba(0,0,0,0.6)}
+
+/* FAV ICON */
+.fav { position:absolute; right:10px; top:10px; background:transparent; border:none; font-size:18px; color:#fff; cursor:pointer; text-shadow:0 6px 16px rgba(0,0,0,0.6) }
+
+/* LIGHTBOX */
+.lightbox{position:fixed; inset:0; display:none; justify-content:center; align-items:center; z-index:99999; background:linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.9)); padding:20px}
+.lightbox.show{display:flex}
+.lightbox-inner{display:flex; gap:18px; align-items:center; max-width:95%; max-height:90%}
+.lightbox img{max-width:calc(100vw - 380px); max-height:85vh; border-radius:10px}
+.lb-meta{max-width:320px; color:var(--muted); font-size:14px}
+.lb-meta h3{margin:0 0 6px 0; font-family:var(--fancy); font-size:20px; color:var(--text)}
+.lb-meta .tags{margin-top:8px; font-size:13px; color:var(--muted)}
+
+/* FAVORITES PANEL */
+.fav-panel{position:fixed; right:16px; top:84px; width:320px; max-height:68vh; overflow:auto; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:12px; border-radius:12px; box-shadow:var(--card-shadow); z-index:9999}
+
+/* BOTTOM CONTROLS */
+.controls-bottom{display:flex; justify-content:center; gap:12px; margin-top:18px}
+.load-more{padding:10px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); background:transparent; color:var(--text); cursor:pointer}
+
+/* BACK TO TOP */
+#backToTop{position:fixed; right:20px; bottom:20px; padding:10px 12px; border-radius:10px; background:var(--accent); color:#000; border:none; cursor:pointer; display:none; z-index:9999}
+
+/* CURSOR */
+#cursor{position:fixed; left:0; top:0; pointer-events:none; width:18px; height:18px; border-radius:50%; transform:translate(-50%,-50%); z-index:99999; background: radial-gradient(circle, rgba(255,180,0,0.9) 0%, rgba(255,78,88,0.16) 60%); box-shadow:0 8px 22px rgba(255,180,0,0.08)}
+
+/* small responsive tweaks */
+@media(max-width:520px){
+  .hero h1{font-size:30px}
+  .controls input{min-width:120px}
+  .lightbox img{max-width:100%;max-height:60vh}
+}
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div id="preloader"><div class="spinner" aria-hidden="true"></div></div>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursor" aria-hidden="true"></div>
+
+<header>
+  <div class="header-left">
+    <div class="logo">A Dream Wallpapers <span class="logo-sub">4K & Mobile</span></div>
+    <nav aria-label="Main navigation">
+      <a href="#">Home</a><a href="#gallery">Wallpapers</a><a href="#about">About</a>
+    </nav>
+  </div>
+  <div class="header-actions">
+    <button class="header-btn" id="themeToggle" title="Toggle theme">☀️</button>
+    <button class="header-btn" id="uploadBtn">Upload</button>
+    <button class="header-btn" id="favoritesToggle">Favorites <span id="favCount" style="margin-left:8px;background:#fff;color:#000;padding:2px 6px;border-radius:6px;font-weight:700">0</span></button>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Discover Cinematic 4K & Mobile Wallpapers</h1>
+  <p>Curated, downloadable, and easy to save — choose sizes, filter by color & category, and make your device shine.</p>
+</section>
+
+<!-- Controls -->
+<div class="controls" role="region" aria-label="Search and filters">
+  <input id="searchInput" type="search" placeholder="Search by title or tag..." aria-label="Search wallpapers">
+  <select id="categorySelect" aria-label="Category filter">
+    <option value="">All Categories</option>
+    <option value="nature">Nature</option>
+    <option value="anime">Anime</option>
+    <option value="minimal">Minimal</option>
+    <option value="abstract">Abstract</option>
+    <option value="city">City</option>
+  </select>
+
+  <select id="colorSelect" aria-label="Color filter">
+    <option value="">All Colors</option>
+    <option value="blue">Blue</option>
+    <option value="pink">Pink</option>
+    <option value="green">Green</option>
+    <option value="orange">Orange</option>
+    <option value="purple">Purple</option>
+  </select>
+
+  <select id="sortSelect" aria-label="Sort by">
+    <option value="new">Newest</option>
+    <option value="popular">Most Downloaded</option>
+  </select>
+
+  <button id="searchBtn">Search</button>
+
+  <input id="newsletterEmail" type="email" placeholder="Your email for new wallpapers" aria-label="newsletter email">
+  <button id="newsletterBtn">Subscribe</button>
+</div>
+
+<!-- Gallery -->
+<div class="container" id="gallery" aria-live="polite">
+  <div class="gallery-grid" id="galleryGrid"></div>
+
+  <div class="controls-bottom">
+    <button id="loadMoreBtn" class="load-more">Load more</button>
+    <button id="infiniteToggle" class="load-more">Enable Infinite Scroll</button>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <div class="lightbox-inner" role="dialog" aria-modal="true">
+    <img id="lbImage" src="" alt="Preview">
+    <div class="lb-meta">
+      <h3 id="lbTitle">Title</h3>
+      <div id="lbInfo" style="color:var(--muted)"></div>
+      <div style="margin-top:12px">
+        <label style="font-size:13px;color:var(--muted)">Download size</label>
+        <select id="sizeSelect" style="margin-left:8px;padding:8px;border-radius:8px;background:var(--surface);color:var(--text)">
+          <option value="original">Original (4K)</option>
+          <option value="1080p">1080p</option>
+          <option value="mobile">Mobile</option>
+        </select>
+        <a id="downloadBtn" class="icon-btn" style="margin-left:10px">⤓ Download</a>
+        <button id="shareBtn" class="icon-btn">Share</button>
+      </div>
+    </div>
+  </div>
+  <button id="lightboxClose" style="position:absolute;right:20px;top:20px;background:transparent;border:none;color:var(--text);font-size:28px;cursor:pointer">✖</button>
+</div>
+
+<!-- Favorites Panel -->
+<div class="fav-panel" id="favPanel" style="display:none">
+  <h4>Your Favorites</h4>
+  <div id="favList"></div>
+</div>
+
+<!-- Back to top -->
+<button id="backToTop" title="Back to top">↑</button>
+
+<footer style="text-align:center;padding:20px 8px;color:var(--muted)"><small>© A Dream Wallpapers • Built with care</small></footer>
+
+<script>
+/* =========================
+   CONFIG: set path to external JSON if you want to maintain wallpapers.json separately.
+   If external fetch fails, the inline JSON below will be used automatically.
+   ========================= */
+const EXTERNAL_JSON_PATH = '/wallpapers.json'; // change to your path (e.g. '/wp-content/themes/your-theme/wallpapers.json')
+
+/* =========================
+   INLINE SAMPLE JSON (fallback)
+   Replace sample URLs with real image links or use external JSON.
+   Each item should include an id, title, category, tags[], colors[], sizes{original,1080p,mobile}, downloads
+   ========================= */
+const INLINE_WALLPAPERS = [
+  { id:101, title:'Mist Mountain', category:'nature', tags:['mountain','mist'], colors:['blue'], sizes:{ original:'https://picsum.photos/1920/1200?random=101', '1080p':'https://picsum.photos/1280/720?random=101', mobile:'https://picsum.photos/720/1280?random=101' }, downloads: 121, featured:true },
+  { id:102, title:'Neon City', category:'city', tags:['night','neon'], colors:['pink'], sizes:{ original:'https://picsum.photos/1920/1200?random=102', '1080p':'https://picsum.photos/1280/720?random=102', mobile:'https://picsum.photos/720/1280?random=102' }, downloads: 400 },
+  { id:103, title:'Soft Pastel', category:'minimal', tags:['pastel','soft'], colors:['pink'], sizes:{ original:'https://picsum.photos/1920/1200?random=103', '1080p':'https://picsum.photos/1280/720?random=103', mobile:'https://picsum.photos/720/1280?random=103' }, downloads: 88 },
+  { id:104, title:'Anime Forest', category:'anime', tags:['forest','anime'], colors:['green'], sizes:{ original:'https://picsum.photos/1920/1200?random=104', '1080p':'https://picsum.photos/1280/720?random=104', mobile:'https://picsum.photos/720/1280?random=104' }, downloads: 215 },
+  { id:105, title:'Abstract Glow', category:'abstract', tags:['vivid'], colors:['purple'], sizes:{ original:'https://picsum.photos/1920/1200?random=105', '1080p':'https://picsum.photos/1280/720?random=105', mobile:'https://picsum.photos/720/1280?random=105' }, downloads: 62 },
+  { id:106, title:'Sunset Cliff', category:'nature', tags:['sunset'], colors:['orange'], sizes:{ original:'https://picsum.photos/1920/1200?random=106', '1080p':'https://picsum.photos/1280/720?random=106', mobile:'https://picsum.photos/720/1280?random=106' }, downloads: 510 }
+];
+
+/* =========================
+   STATE & UTILITIES
+   ========================= */
+let WALLPAPERS = []; // will hold loaded wallpapers
+const state = { filtered:[], visibleCount:6, infinite:false, currentIndex:0 };
+
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+/* custom cursor */
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; });
+
+/* PRELOADER HIDE */
+window.addEventListener('load', () => {
+  setTimeout(()=>{ const p = document.getElementById('preloader'); if(p) p.style.display='none'; }, 400);
+});
+
+/* FETCH EXTERNAL JSON THEN FALLBACK */
+async function loadWallpapersJSON(){
+  try{
+    const res = await fetch(EXTERNAL_JSON_PATH, {cache:'no-store'});
+    if(!res.ok) throw new Error('no external json');
+    const data = await res.json();
+    if(Array.isArray(data) && data.length>0){
+      WALLPAPERS = data;
+    } else {
+      WALLPAPERS = INLINE_WALLPAPERS.slice();
+    }
+  } catch(err){
+    WALLPAPERS = INLINE_WALLPAPERS.slice();
+  } finally {
+    state.filtered = WALLPAPERS.slice();
+    init();
+  }
+}
+
+/* RENDER GALLERY (chunked) */
+function renderGallery(reset=true){
+  const grid = $('#galleryGrid');
+  if(reset) grid.innerHTML = '';
+  const slice = state.filtered.slice(0, state.visibleCount);
+  slice.forEach(item => {
+    const card = document.createElement('div'); card.className='card';
+    card.innerHTML = `
+      <div style="position:relative">
+        <a href="${item.sizes.original}" class="preview" data-id="${item.id}" aria-label="Open ${escapeHtml(item.title)}">
+          <img data-src="${item.sizes['1080p'] || item.sizes.original}" alt="${escapeHtml(item.title)}" loading="lazy" />
+        </a>
+        <button class="fav" data-id="${item.id}" title="Add to favorites">♡</button>
+        <div class="meta">${escapeHtml(item.category)} • ${item.downloads || 0}↓</div>
+        <div class="actions">
+          <button class="icon-btn download-mini" data-id="${item.id}">⤓</button>
+          <button class="icon-btn share-mini" data-id="${item.id}">⇪</button>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+  lazyLoad();
+  attachCardHandlers();
+  updateFavUI();
+}
+
+/* LAZY LOAD */
+function lazyLoad(){
+  const imgs = document.querySelectorAll('img[data-src]');
+  if('IntersectionObserver' in window){
+    const obs = new IntersectionObserver((entries, o) => {
+      entries.forEach(ent => {
+        if(ent.isIntersecting){
+          const img = ent.target;
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+          o.unobserve(img);
+        }
+      });
+    }, {rootMargin:'80px'});
+    imgs.forEach(i => obs.observe(i));
+  } else { imgs.forEach(i => i.src = i.dataset.src); }
+}
+
+/* ATTACH HANDLERS FOR CARDS */
+function attachCardHandlers(){
+  $$('.preview').forEach(a => a.onclick = (e) => { e.preventDefault(); openLightboxById(Number(a.dataset.id)); });
+
+  $$('.download-mini').forEach(btn => btn.onclick = (e) => {
+    e.stopPropagation();
+    const id = Number(btn.dataset.id);
+    const obj = WALLPAPERS.find(x=>x.id===id);
+    if(!obj) return;
+    triggerDownload(obj.sizes.original, obj.title.replace(/\s+/g,'_') + '.jpg');
+    obj.downloads = (obj.downloads||0)+1;
+    renderGallery(false);
+  });
+
+  $$('.share-mini').forEach(btn => btn.onclick = (e) => {
+    e.stopPropagation();
+    const id = Number(btn.dataset.id);
+    const obj = WALLPAPERS.find(x=>x.id===id);
+    if(!obj) return;
+    openShareDialog(obj);
+  });
+
+  $$('.fav').forEach(btn => btn.onclick = (e) => {
+    e.stopPropagation();
+    const id = Number(btn.dataset.id);
+    toggleFavorite(id);
+    renderGallery(false);
+  });
+
+  // update heart visuals (after render)
+  $$('.card').forEach(card => {
+    const pid = Number(card.querySelector('.preview').dataset.id);
+    const favs = getFavorites();
+    const fbtn = card.querySelector('.fav');
+    if(favs.includes(pid)) fbtn.textContent = '♥'; else fbtn.textContent = '♡';
+  });
+}
+
+/* FILTERS & SEARCH */
+$('#searchBtn').addEventListener('click', applyFilters);
+$('#searchInput').addEventListener('keyup', e => { if(e.key==='Enter') applyFilters(); });
+$('#categorySelect').addEventListener('change', applyFilters);
+$('#sortSelect').addEventListener('change', applyFilters);
+$('#colorSelect').addEventListener('change', applyFilters);
+
+function applyFilters(){
+  const q = $('#searchInput').value.trim().toLowerCase();
+  const cat = $('#categorySelect').value;
+  const color = $('#colorSelect').value;
+  const sort = $('#sortSelect').value;
+  state.filtered = WALLPAPERS.filter(i => {
+    const matchQ = q === '' || i.title.toLowerCase().includes(q) || (i.tags && i.tags.join(' ').toLowerCase().includes(q));
+    const matchCat = !cat || i.category === cat;
+    const matchColor = !color || (i.colors && i.colors.includes(color));
+    return matchQ && matchCat && matchColor;
+  });
+  if(sort === 'popular') state.filtered.sort((a,b)=>(b.downloads||0)-(a.downloads||0));
+  // newest assumed as original order
+  state.visibleCount = Math.min(6, state.filtered.length);
+  renderGallery(true);
+}
+
+/* LOAD MORE / INFINITE */
+$('#loadMoreBtn').addEventListener('click', () => {
+  state.visibleCount = Math.min(state.visibleCount + 6, state.filtered.length);
+  renderGallery(false);
+  if(state.visibleCount >= state.filtered.length) $('#loadMoreBtn').style.display='none';
+});
+$('#infiniteToggle').addEventListener('click', () => {
+  state.infinite = !state.infinite;
+  $('#infiniteToggle').textContent = state.infinite ? 'Disable Infinite Scroll' : 'Enable Infinite Scroll';
+});
+window.addEventListener('scroll', () => {
+  if(state.infinite && (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 300)){
+    if(state.visibleCount < state.filtered.length){
+      state.visibleCount = Math.min(state.visibleCount + 6, state.filtered.length);
+      renderGallery(false);
+    }
+  }
+  $('#backToTop').style.display = window.scrollY > 600 ? 'block' : 'none';
+});
+
+/* LIGHTBOX */
+const lightbox = $('#lightbox'); const lbImage = $('#lbImage'); const lbTitle = $('#lbTitle'); const lbInfo = $('#lbInfo'); const sizeSelect = $('#sizeSelect');
+function openLightboxById(id){
+  const idx = state.filtered.findIndex(x=>x.id===id);
+  if(idx === -1) return;
+  state.currentIndex = idx;
+  showLightbox(state.filtered[idx]);
+}
+function showLightbox(obj){
+  lbImage.src = obj.sizes.original;
+  lbTitle.textContent = obj.title;
+  lbInfo.textContent = `${obj.category} • ${obj.tags ? obj.tags.join(', ') : ''} • ${(obj.downloads||0)} downloads`;
+  sizeSelect.value = 'original';
+  $('#downloadBtn').onclick = () => triggerDownload(obj.sizes[sizeSelect.value] || obj.sizes.original, obj.title.replace(/\s+/g,'_') + '.jpg');
+  $('#shareBtn').onclick = () => openShareDialog(obj);
+  lightbox.classList.add('show'); lightbox.setAttribute('aria-hidden','false');
+}
+$('#lightboxClose').addEventListener('click', closeLightbox);
+document.addEventListener('keydown', e => {
+  if(!lightbox.classList.contains('show')) return;
+  if(e.key==='Escape') closeLightbox();
+  if(e.key==='ArrowRight') navigate(1);
+  if(e.key==='ArrowLeft') navigate(-1);
+});
+function closeLightbox(){ lightbox.classList.remove('show'); lightbox.setAttribute('aria-hidden','true'); lbImage.src=''; }
+function navigate(dir){
+  let i = state.currentIndex + dir;
+  if(i < 0) i = state.filtered.length - 1;
+  if(i >= state.filtered.length) i = 0;
+  state.currentIndex = i; showLightbox(state.filtered[i]);
+}
+
+/* DOWNLOAD helper */
+function triggerDownload(url, filename){
+  const a = document.createElement('a'); a.href = url; a.download = filename || ''; document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* SHARE helper (uses navigator.share if available) */
+function openShareDialog(obj){
+  if(navigator.share){
+    navigator.share({ title: obj.title, text: obj.title + ' — A Dream Wallpapers', url: obj.sizes.original }).catch(()=>{});
+  } else {
+    const url = encodeURIComponent(obj.sizes.original); const text = encodeURIComponent(obj.title + ' • A Dream Wallpapers');
+    window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+  }
+}
+
+/* FAVORITES using localStorage */
+function getFavorites(){ return JSON.parse(localStorage.getItem('adw_favs') || '[]'); }
+function setFavorites(arr){ localStorage.setItem('adw_favs', JSON.stringify(arr)); updateFavUI(); }
+function toggleFavorite(id){
+  const favs = getFavorites();
+  if(favs.includes(id)) setFavorites(favs.filter(x=>x!==id));
+  else { favs.push(id); setFavorites(favs); }
+}
+function updateFavUI(){
+  const list = $('#favList'); list.innerHTML = ''; const favs = getFavorites(); $('#favCount').textContent = favs.length;
+  favs.slice().reverse().forEach(id => {
+    const obj = WALLPAPERS.find(x=>x.id===id); if(!obj) return;
+    const node = document.createElement('div'); node.className='fav-preview';
+    node.style.display='flex'; node.style.justifyContent='space-between'; node.style.marginBottom='8px';
+    node.innerHTML = `<div style="display:flex;gap:8px"><img src="${obj.sizes['1080p']}" style="width:64px;height:40px;object-fit:cover;border-radius:6px"><div><div style="font-weight:700">${obj.title}</div><div style="color:var(--muted);font-size:13px">${obj.category}</div></div></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><button class="icon-btn" onclick="openLightboxById(${obj.id})">View</button><button class="icon-btn" onclick="removeFav(${obj.id})">Remove</button></div>`;
+    list.appendChild(node);
+  });
+}
+function removeFav(id){ const arr=getFavorites(); setFavorites(arr.filter(x=>x!==id)); renderGallery(false); }
+
+/* NEWSLETTER (local demo) */
+$('#newsletterBtn').addEventListener('click', () => {
+  const email = $('#newsletterEmail').value.trim(); if(!email.includes('@')) { alert('Enter a valid email'); return; }
+  const subs = JSON.parse(localStorage.getItem('adw_news') || '[]'); subs.push({email, date: new Date().toISOString()});
+  localStorage.setItem('adw_news', JSON.stringify(subs)); $('#newsletterEmail').value=''; toast('Thanks — saved locally. Connect to Mailchimp later.');
+});
+
+/* BACK TO TOP */
+$('#backToTop').addEventListener('click', () => window.scrollTo({ top:0, behavior:'smooth' }));
+
+/* THEME TOGGLE */
+function applyTheme(isLight){
+  if(isLight) document.body.classList.add('light'); else document.body.classList.remove('light');
+  localStorage.setItem('adw_theme', isLight ? 'light' : 'dark'); $('#themeToggle').textContent = isLight ? '🌙' : '☀️';
+}
+$('#themeToggle').addEventListener('click', () => {
+  const isLight = document.body.classList.toggle('light'); applyTheme(isLight);
+});
+(function(){ const t = localStorage.getItem('adw_theme'); applyTheme(t === 'light'); })();
+
+/* UPLOAD button placeholder */
+$('#uploadBtn').addEventListener('click', ()=>{ window.location.href = '/upload'; /* change to real upload URL */ });
+
+/* TOAST */
+function toast(msg){ const d = document.createElement('div'); d.textContent = msg; d.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:30px;background:#111;padding:10px 14px;border-radius:10px;z-index:99999;color:#fff'; document.body.appendChild(d); setTimeout(()=>d.remove(),2000); }
+
+/* UTILITIES */
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* INIT */
+function init(){
+  if(!WALLPAPERS || !WALLPAPERS.length) WALLPAPERS = INLINE_WALLPAPERS.slice();
+  state.filtered = WALLPAPERS.slice();
+  renderGallery(true);
+  // hide load more if all visible
+  if(state.visibleCount >= state.filtered.length) $('#loadMoreBtn').style.display='none';
+  attachCardHandlers();
+  updateFavUI();
+}
+
+/* try load external JSON then fallback */
+loadWallpapersJSON();
+
+/* Keyboard / accessibility handled earlier; basic service worker omitted for simplicity (can be added later) */
+
+</script>
+</body>
+</html>
