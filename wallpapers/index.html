@@ -56,44 +56,55 @@
     section{padding:40px 20px;max-width:1200px;margin:auto}
     .section-title{font-family:'Dancing Script',cursive;font-size:2rem;margin-bottom:10px}
     .controls{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:25px;align-items:center}
-    .search-input,.category-select{padding:10px 14px;border:none;border-radius:8px;font-size:1rem;transition:background 0.3s, color 0.3s}
-    .search-input{flex:1;min-width:220px;background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border-color)}
-    .category-select{background:var(--bg-card);color:var(--text-primary);font-weight:600;border:1px solid var(--border-color)}
+    .search-input{padding:10px 14px;border:none;border-radius:8px;font-size:1rem;transition:background 0.3s, color 0.3s;flex:1;min-width:220px;background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border-color)}
     
     .category-section{margin-bottom:50px}
-    .category-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .category-header{margin-bottom:20px}
     .category-title{font-family:'Dancing Script',cursive;font-size:1.8rem;color:var(--accent)}
-    .carousel-controls{display:flex;gap:10px}
-    .carousel-btn{background:var(--bg-card);border:2px solid var(--text-primary);color:var(--text-primary);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:all 0.3s}
-    .carousel-btn:hover:not(:disabled){background:var(--text-primary);color:var(--bg-secondary)}
-    .carousel-btn:disabled{opacity:0.3;cursor:not-allowed}
     
-    .carousel-container{position:relative;overflow:hidden}
-    .carousel-track{display:flex;gap:22px;transition:transform 0.4s ease;padding:10px 0}
+    .scroll-container{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--text-secondary) var(--bg-card)}
+    .scroll-container::-webkit-scrollbar{height:8px}
+    .scroll-container::-webkit-scrollbar-track{background:var(--bg-card)}
+    .scroll-container::-webkit-scrollbar-thumb{background:var(--text-secondary);border-radius:4px}
+    .scroll-container::-webkit-scrollbar-thumb:hover{background:var(--text-primary)}
     
-    .card-wrap{flex:0 0 280px;perspective:1000px}
-    .card-inner{position:relative;width:100%;aspect-ratio:3/4;transform-style:preserve-3d;transition:transform .6s;cursor:pointer;border-radius:12px;overflow:hidden}
+    .scroll-track{display:flex;gap:22px;padding:10px 0}
+    
+    .card-wrap{flex:0 0 auto;perspective:1000px}
+    .card-wrap.mobile{width:200px}
+    .card-wrap.desktop{width:320px}
+    
+    .card-inner{position:relative;width:100%;transform-style:preserve-3d;transition:transform .6s;cursor:pointer;border-radius:12px;overflow:hidden}
+    .card-inner.mobile{aspect-ratio:9/16}
+    .card-inner.desktop{aspect-ratio:16/9}
+    
     .card-inner.is-flipped{transform:rotateY(180deg)}
     .card-front,.card-back{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;overflow:hidden;box-shadow:0 8px 18px var(--card-shadow);transition:box-shadow 0.3s}
     .card-front{transform:rotateY(0deg);z-index:2}
     .card-front img{width:100%;height:100%;object-fit:cover}
     .card-back{background:var(--bg-card);color:var(--text-primary);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;padding:18px;transform:rotateY(180deg) scaleX(-1);border:1px solid var(--border-color)}
+    .card-back h3{font-size:1rem;text-align:center;word-break:break-word}
+    .card-back .btn-group{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+    .card-inner.mobile .card-back{gap:10px;padding:15px}
+    .card-inner.mobile .card-back h3{font-size:0.9rem}
+    .card-inner.mobile .card-back .btn{padding:6px 12px;font-size:0.85rem}
     .card-inner.is-flipped .card-front{transform:rotateY(180deg)}
     .card-inner.is-flipped .card-back{transform:rotateY(360deg) scaleX(-1)}
     .btn{padding:8px 14px;border-radius:999px;background:var(--text-primary);color:var(--bg-secondary);font-weight:700;cursor:pointer;border:none;transition:all 0.3s}
     .btn.alt{background:transparent;border:2px solid var(--text-primary);color:var(--text-primary)}
     .btn:hover{transform:scale(1.05)}
     .caption{font-family:'Dancing Script',cursive;margin-top:10px;text-align:center}
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:var(--overlay-bg);z-index:2000;padding:20px}
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.95);z-index:2000}
     .modal.show{display:flex}
-    .modal-img{max-width:100%;max-height:90vh;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,.7)}
-    .modal-close{position:absolute;top:18px;right:18px;background:transparent;border:2px solid var(--text-primary);color:var(--text-primary);border-radius:8px;padding:6px 10px;font-weight:700;cursor:pointer;transition:all 0.3s}
+    .modal-img{max-width:100vw;max-height:100vh;object-fit:contain}
+    .modal-close{position:absolute;top:18px;right:18px;background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);border:2px solid var(--text-primary);color:var(--text-primary);border-radius:8px;padding:8px 16px;font-weight:700;cursor:pointer;transition:all 0.3s;font-size:1rem}
     .modal-close:hover{background:var(--text-primary);color:var(--bg-secondary)}
     footer{background:var(--bg-secondary);padding:18px;text-align:center;color:var(--text-secondary);margin-top:40px;transition:background 0.3s, color 0.3s}
     footer a{color:var(--text-primary);text-decoration:none;margin:0 6px;transition:color 0.3s}
     
     @media (max-width: 768px) {
-      .card-wrap{flex:0 0 220px}
+      .card-wrap.mobile{width:160px}
+      .card-wrap.desktop{width:260px}
       #themeToggle{font-size:0.85rem;padding:6px 10px}
     }
   </style>
@@ -115,14 +126,10 @@
   <a href="/privacy/">Privacy Policy</a>
 </div>
 
-
 <section>
   <h2 class="section-title">Free Wallpapers</h2>
   <div class="controls">
     <input type="text" id="searchInput" class="search-input" placeholder="Search wallpapers...">
-    <select id="categorySelect" class="category-select">
-      <option value="all">All Categories</option>
-    </select>
   </div>
   <div id="carouselContainer"></div>
 </section>
@@ -192,6 +199,9 @@ modalClose.onclick = closeModal;
 modal.onclick = e => {
   if (e.target === modal) closeModal();
 };
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && modal.classList.contains('show')) closeModal();
+});
 
 // Download Function
 async function forceDownload(url, name) {
@@ -212,39 +222,29 @@ async function forceDownload(url, name) {
   }
 }
 
-// Carousel State
-const carouselStates = {};
-
-function createCarousel(category, wallpapers) {
+function createScrollSection(category, wallpapers, type) {
   const section = document.createElement('div');
   section.className = 'category-section';
   
   const header = document.createElement('div');
   header.className = 'category-header';
-  header.innerHTML = `
-    <h3 class="category-title">${category}</h3>
-    <div class="carousel-controls">
-      <button class="carousel-btn prev" data-category="${category}">‹</button>
-      <button class="carousel-btn next" data-category="${category}">›</button>
-    </div>
-  `;
+  header.innerHTML = `<h3 class="category-title">${category}</h3>`;
   
-  const carouselContainer = document.createElement('div');
-  carouselContainer.className = 'carousel-container';
+  const scrollContainer = document.createElement('div');
+  scrollContainer.className = 'scroll-container';
   
   const track = document.createElement('div');
-  track.className = 'carousel-track';
-  track.dataset.category = category;
+  track.className = 'scroll-track';
   
   wallpapers.forEach(it => {
     const wrap = document.createElement('div');
-    wrap.className = 'card-wrap';
+    wrap.className = `card-wrap ${type}`;
     wrap.innerHTML = `
-      <div class="card-inner">
+      <div class="card-inner ${type}">
         <div class="card-front"><img src="${it.thumb || it.image}" alt="${it.title || 'Wallpaper'}"></div>
         <div class="card-back">
           <h3>${it.title || ''}</h3>
-          <div style="display:flex;gap:10px;">
+          <div class="btn-group">
             <button class="btn preview">Preview</button>
             <button class="btn alt download">Download</button>
           </div>
@@ -270,96 +270,47 @@ function createCarousel(category, wallpapers) {
     };
   });
   
-  carouselContainer.appendChild(track);
+  scrollContainer.appendChild(track);
   section.appendChild(header);
-  section.appendChild(carouselContainer);
-  
-  carouselStates[category] = { currentIndex: 0, track, wallpapers };
+  section.appendChild(scrollContainer);
   
   return section;
 }
 
-function updateCarousel(category) {
-  const state = carouselStates[category];
-  const cardWidth = 280 + 22;
-  const offset = -state.currentIndex * cardWidth;
-  state.track.style.transform = `translateX(${offset}px)`;
-  
-  const prevBtn = document.querySelector(`.prev[data-category="${category}"]`);
-  const nextBtn = document.querySelector(`.next[data-category="${category}"]`);
-  
-  prevBtn.disabled = state.currentIndex === 0;
-  
-  const containerWidth = state.track.parentElement.offsetWidth;
-  const maxVisible = Math.floor(containerWidth / cardWidth);
-  const maxIndex = Math.max(0, state.wallpapers.length - maxVisible);
-  nextBtn.disabled = state.currentIndex >= maxIndex;
-}
-
-// Search and Filter
+// Search
 const searchInput = document.getElementById('searchInput');
-const categorySelect = document.getElementById('categorySelect');
 const carouselContainer = document.getElementById('carouselContainer');
 
 let allWallpapers = [];
 
-function buildCarousels(wallpapers) {
+function buildSections(wallpapers) {
   carouselContainer.innerHTML = '';
   
-  const grouped = {};
-  wallpapers.forEach(w => {
-    const tags = w.tags || ['Uncategorized'];
-    tags.forEach(tag => {
-      if (!grouped[tag]) grouped[tag] = [];
-      grouped[tag].push(w);
-    });
-  });
+  const mobileWallpapers = wallpapers.filter(w => (w.tags || []).includes('Mobile'));
+  const desktopWallpapers = wallpapers.filter(w => (w.tags || []).includes('Desktop'));
   
-  Object.keys(grouped).sort().forEach(category => {
-    const carousel = createCarousel(category, grouped[category]);
-    carouselContainer.appendChild(carousel);
-    setTimeout(() => updateCarousel(category), 0);
-  });
+  if (mobileWallpapers.length > 0) {
+    const mobileSection = createScrollSection('Mobile Wallpapers', mobileWallpapers, 'mobile');
+    carouselContainer.appendChild(mobileSection);
+  }
   
-  document.querySelectorAll('.carousel-btn').forEach(btn => {
-    btn.onclick = () => {
-      const category = btn.dataset.category;
-      const state = carouselStates[category];
-      
-      if (btn.classList.contains('prev')) {
-        state.currentIndex = Math.max(0, state.currentIndex - 1);
-      } else {
-        const containerWidth = state.track.parentElement.offsetWidth;
-        const cardWidth = 280 + 22;
-        const maxVisible = Math.floor(containerWidth / cardWidth);
-        const maxIndex = Math.max(0, state.wallpapers.length - maxVisible);
-        state.currentIndex = Math.min(maxIndex, state.currentIndex + 1);
-      }
-      
-      updateCarousel(category);
-    };
-  });
+  if (desktopWallpapers.length > 0) {
+    const desktopSection = createScrollSection('Desktop Wallpapers', desktopWallpapers, 'desktop');
+    carouselContainer.appendChild(desktopSection);
+  }
 }
 
 function updateFilters() {
   const q = searchInput.value.toLowerCase();
-  const cat = categorySelect.value;
   
   const filtered = allWallpapers.filter(w => {
-    const matchSearch = w.title.toLowerCase().includes(q) || (w.description || '').toLowerCase().includes(q);
-    const matchCat = cat === 'all' || (w.tags || []).map(t => t.toLowerCase()).includes(cat.toLowerCase());
-    return matchSearch && matchCat;
+    return w.title.toLowerCase().includes(q) || (w.description || '').toLowerCase().includes(q);
   });
   
-  buildCarousels(filtered);
+  buildSections(filtered);
 }
 
 searchInput.oninput = updateFilters;
-categorySelect.onchange = updateFilters;
-
-window.addEventListener('resize', () => {
-  Object.keys(carouselStates).forEach(category => updateCarousel(category));
-});
 
 // Load wallpapers
 (async () => {
@@ -369,31 +320,23 @@ window.addEventListener('resize', () => {
   } catch (err) {
     // Sample data
     allWallpapers = [
-      { title: 'Mountain Sunset', image: 'https://picsum.photos/800/1200?random=1', thumb: 'https://picsum.photos/400/600?random=1', tags: ['Nature', 'Landscape'] },
-      { title: 'Ocean Waves', image: 'https://picsum.photos/800/1200?random=2', thumb: 'https://picsum.photos/400/600?random=2', tags: ['Nature', 'Ocean'] },
-      { title: 'City Lights', image: 'https://picsum.photos/800/1200?random=3', thumb: 'https://picsum.photos/400/600?random=3', tags: ['Urban', 'Night'] },
-      { title: 'Forest Path', image: 'https://picsum.photos/800/1200?random=4', thumb: 'https://picsum.photos/400/600?random=4', tags: ['Nature', 'Forest'] },
-      { title: 'Desert Dunes', image: 'https://picsum.photos/800/1200?random=5', thumb: 'https://picsum.photos/400/600?random=5', tags: ['Nature', 'Desert'] },
-      { title: 'Urban Architecture', image: 'https://picsum.photos/800/1200?random=6', thumb: 'https://picsum.photos/400/600?random=6', tags: ['Urban', 'Architecture'] },
-      { title: 'Night Sky', image: 'https://picsum.photos/800/1200?random=7', thumb: 'https://picsum.photos/400/600?random=7', tags: ['Nature', 'Night'] },
-      { title: 'Tropical Beach', image: 'https://picsum.photos/800/1200?random=8', thumb: 'https://picsum.photos/400/600?random=8', tags: ['Nature', 'Ocean'] },
-      { title: 'Mountain Peak', image: 'https://picsum.photos/800/1200?random=9', thumb: 'https://picsum.photos/400/600?random=9', tags: ['Nature', 'Landscape'] },
-      { title: 'City Streets', image: 'https://picsum.photos/800/1200?random=10', thumb: 'https://picsum.photos/400/600?random=10', tags: ['Urban', 'Architecture'] }
+      { title: 'Mountain Sunset', image: 'https://picsum.photos/1080/1920?random=1', thumb: 'https://picsum.photos/540/960?random=1', tags: ['Mobile'] },
+      { title: 'Ocean Waves', image: 'https://picsum.photos/1080/1920?random=2', thumb: 'https://picsum.photos/540/960?random=2', tags: ['Mobile'] },
+      { title: 'City Lights', image: 'https://picsum.photos/1080/1920?random=3', thumb: 'https://picsum.photos/540/960?random=3', tags: ['Mobile'] },
+      { title: 'Forest Path', image: 'https://picsum.photos/1080/1920?random=4', thumb: 'https://picsum.photos/540/960?random=4', tags: ['Mobile'] },
+      { title: 'Desert Dunes', image: 'https://picsum.photos/1080/1920?random=5', thumb: 'https://picsum.photos/540/960?random=5', tags: ['Mobile'] },
+      { title: 'Urban Architecture', image: 'https://picsum.photos/1920/1080?random=6', thumb: 'https://picsum.photos/960/540?random=6', tags: ['Desktop'] },
+      { title: 'Night Sky', image: 'https://picsum.photos/1920/1080?random=7', thumb: 'https://picsum.photos/960/540?random=7', tags: ['Desktop'] },
+      { title: 'Tropical Beach', image: 'https://picsum.photos/1920/1080?random=8', thumb: 'https://picsum.photos/960/540?random=8', tags: ['Desktop'] },
+      { title: 'Mountain Peak', image: 'https://picsum.photos/1920/1080?random=9', thumb: 'https://picsum.photos/960/540?random=9', tags: ['Desktop'] },
+      { title: 'City Streets', image: 'https://picsum.photos/1920/1080?random=10', thumb: 'https://picsum.photos/960/540?random=10', tags: ['Desktop'] }
     ];
   }
   
-  const tagSet = new Set();
-  allWallpapers.forEach(w => (w.tags || []).forEach(t => tagSet.add(t)));
-  [...tagSet].sort().forEach(tag => {
-    const opt = document.createElement('option');
-    opt.value = tag;
-    opt.textContent = tag;
-    categorySelect.appendChild(opt);
-  });
-  
-  buildCarousels(allWallpapers);
+  buildSections(allWallpapers);
 })();
-  // ✅ Fix sidebar link navigation on subpages
+
+// Fix sidebar link navigation on subpages
 document.querySelectorAll('#sidebar a').forEach(link => {
   link.addEventListener('click', (e) => {
     const href = link.getAttribute('href');
@@ -403,7 +346,7 @@ document.querySelectorAll('#sidebar a').forEach(link => {
       window.location.href = fullURL;
     }
   });
-  });
+});
 </script>
 </body>
 </html>
