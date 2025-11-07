@@ -243,6 +243,16 @@ sidebar.querySelectorAll('a').forEach(a => a.onclick = () => {
   sidebar.classList.remove('show');
   overlay.classList.remove('show');
 });
+  // ✅ Fix sidebar link navigation on subpages
+document.querySelectorAll('#sidebar a').forEach(link => {
+  link.addEventListener('click', (e) => {
+    const href = link.getAttribute('href');
+    if (href.startsWith('/')) {
+      e.preventDefault();
+      const fullURL = window.location.origin + '/adreamart' + href;
+      window.location.href = fullURL;
+    }
+  });
 </script>
 </body>
 </html>
