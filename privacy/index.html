@@ -243,17 +243,19 @@ sidebar.querySelectorAll('a').forEach(a => a.onclick = () => {
   sidebar.classList.remove('show');
   overlay.classList.remove('show');
 });
-  // ✅ Fix sidebar link navigation on subpages
+  // ✅ Fix sidebar link navigation on subpages (works for GitHub Pages + relative paths)
 document.querySelectorAll('#sidebar a').forEach(link => {
   link.addEventListener('click', (e) => {
     const href = link.getAttribute('href');
-    if (href.startsWith('/')) {
-      e.preventDefault();
-      const fullURL = window.location.origin + '/adreamart' + href;
-      window.location.href = fullURL;
-    }
+    // Ignore external or anchor links
+    if (href.startsWith('http') || href.startsWith('#')) return;
+
+    e.preventDefault();
+    const base = window.location.pathname.split('/')[1]; // 'adreamart'
+    const fullURL = `${window.location.origin}/${base}/${href.replace('./', '')}`;
+    window.location.href = fullURL;
   });
-  });
+});
 
 </script>
 </body>
