@@ -1,27 +1,16 @@
 [
   {
-    "image": "https://ik.imagekit.io/h2tos5anh/photo_2025-11-07_09-52-15.jpg",
-    "thumb": "https://ik.imagekit.io/h2tos5anh/photo_2025-11-07_09-52-15.jpg",
-    "title": "Sunset Over Dreamland",
-    "description": "4K • A Dream Art",
-    "filename": "sunset_dreamland.jpg",
-    "ext": ".jpg",
-    "caption": "Sunset Dream"
+    "title": "Mountain Sunset",
+    "image": "https://example.com/full-image.jpg",
+    "thumb": "https://example.com/thumbnail.jpg",
+    "tags": ["Nature", "Landscape"],
+    "description": "Beautiful mountain sunset"
   },
   {
-    "image": "https://ik.imagekit.io/lbmgfujrk/wallpapers/wall2_1920.jpg",
-    "thumb": "https://ik.imagekit.io/lbmgfujrk/wallpapers/thumb_wall2.jpg",
-    "title": "Cloud Village",
-    "description": "AMOLED Friendly",
-    "filename": "cloud_village.jpg",
-    "caption": "Cloud Village"
-  },
-  {
-    "image": "https://ik.imagekit.io/lbmgfujrk/wallpapers/wall3_1920.jpg",
-    "thumb": "https://ik.imagekit.io/lbmgfujrk/wallpapers/thumb_wall3.jpg",
-    "title": "Golden Hour Forest",
-    "description": "Minimal • 4K",
-    "filename": "golden_forest.jpg",
-    "caption": "Golden Forest"
+    "title": "Ocean Waves",
+    "image": "https://example.com/ocean.jpg",
+    "thumb": "https://example.com/ocean-thumb.jpg",
+    "tags": ["Nature", "Ocean"],
+    "description": "Peaceful ocean waves"
   }
 ]
