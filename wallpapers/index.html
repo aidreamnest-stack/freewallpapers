@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>A Dream Art — Wallpapers</title>
-  <link rel="icon" href="https://ik.imagekit.io/h2tos5anh/photo_2025-11-07_09-52-15.jpg?updatedAt=1762489388864" type="image/png">
+  <link rel="icon" href="https://ik.imagekit.io/lbmgfujrk/favicon.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
@@ -19,6 +19,7 @@
       --border-color: #333;
       --overlay-bg: rgba(0,0,0,0.5);
       --card-shadow: rgba(0,0,0,.5);
+      --accent: #f39c12;
     }
     
     [data-theme="light"] {
@@ -30,6 +31,7 @@
       --border-color: #ddd;
       --overlay-bg: rgba(0,0,0,0.3);
       --card-shadow: rgba(0,0,0,.2);
+      --accent: #e67e22;
     }
     
     body{font-family:'Poppins',sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;overflow-x:hidden;transition:background 0.3s, color 0.3s}
@@ -50,6 +52,7 @@
     #sidebar.show{transform:translateX(300px)}
     #sidebar a{color:var(--text-primary);text-decoration:none;padding:15px 25px;font-weight:600;border-bottom:1px solid var(--border-color);transition:all 0.3s}
     #sidebar a:hover{background:var(--text-primary);color:var(--bg-secondary)}
+    
     section{padding:40px 20px;max-width:1200px;margin:auto}
     .section-title{font-family:'Dancing Script',cursive;font-size:2rem;margin-bottom:10px}
     .controls{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:25px;align-items:center}
@@ -59,10 +62,10 @@
     
     .category-section{margin-bottom:50px}
     .category-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-    .category-title{font-family:'Dancing Script',cursive;font-size:1.8rem}
+    .category-title{font-family:'Dancing Script',cursive;font-size:1.8rem;color:var(--accent)}
     .carousel-controls{display:flex;gap:10px}
     .carousel-btn{background:var(--bg-card);border:2px solid var(--text-primary);color:var(--text-primary);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:all 0.3s}
-    .carousel-btn:hover{background:var(--text-primary);color:var(--bg-secondary)}
+    .carousel-btn:hover:not(:disabled){background:var(--text-primary);color:var(--bg-secondary)}
     .carousel-btn:disabled{opacity:0.3;cursor:not-allowed}
     
     .carousel-container{position:relative;overflow:hidden}
@@ -192,26 +195,18 @@ modal.onclick = e => {
 // Download Function
 async function forceDownload(url, name) {
   try {
-    // Fetch the image as a blob to handle CORS
     const response = await fetch(url);
     const blob = await response.blob();
-    
-    // Create a temporary URL for the blob
     const blobUrl = URL.createObjectURL(blob);
-    
-    // Create and trigger download
     const a = document.createElement('a');
     a.href = blobUrl;
     a.download = name;
     document.body.appendChild(a);
     a.click();
-    
-    // Cleanup
     document.body.removeChild(a);
     URL.revokeObjectURL(blobUrl);
   } catch (error) {
     console.error('Download failed:', error);
-    // Fallback: open in new tab if fetch fails
     window.open(url, '_blank');
   }
 }
@@ -263,6 +258,7 @@ function createCarousel(category, wallpapers) {
       if (e.target.closest('button')) return;
       inner.classList.toggle('is-flipped');
     };
+    
     wrap.querySelector('.preview').onclick = e => {
       e.stopPropagation();
       openModal(it.image);
@@ -284,7 +280,7 @@ function createCarousel(category, wallpapers) {
 
 function updateCarousel(category) {
   const state = carouselStates[category];
-  const cardWidth = 280 + 22; // card width + gap
+  const cardWidth = 280 + 22;
   const offset = -state.currentIndex * cardWidth;
   state.track.style.transform = `translateX(${offset}px)`;
   
@@ -309,7 +305,6 @@ let allWallpapers = [];
 function buildCarousels(wallpapers) {
   carouselContainer.innerHTML = '';
   
-  // Group by category
   const grouped = {};
   wallpapers.forEach(w => {
     const tags = w.tags || ['Uncategorized'];
@@ -319,16 +314,12 @@ function buildCarousels(wallpapers) {
     });
   });
   
-  // Create carousel for each category
   Object.keys(grouped).sort().forEach(category => {
     const carousel = createCarousel(category, grouped[category]);
     carouselContainer.appendChild(carousel);
-    
-    // Initialize carousel position
     setTimeout(() => updateCarousel(category), 0);
   });
   
-  // Add carousel navigation
   document.querySelectorAll('.carousel-btn').forEach(btn => {
     btn.onclick = () => {
       const category = btn.dataset.category;
@@ -365,23 +356,31 @@ function updateFilters() {
 searchInput.oninput = updateFilters;
 categorySelect.onchange = updateFilters;
 
-// Handle window resize
 window.addEventListener('resize', () => {
   Object.keys(carouselStates).forEach(category => updateCarousel(category));
 });
 
-// Sample Data (Replace with actual wallpapers.json fetch)
+// Load wallpapers
 (async () => {
-  // Try to fetch wallpapers.json, fallback to sample data
   try {
     const res = await fetch('wallpapers.json');
     allWallpapers = await res.json();
   } catch (err) {
-    // Sample data for demonstration
-    
+    // Sample data
+    allWallpapers = [
+      { title: 'Mountain Sunset', image: 'https://picsum.photos/800/1200?random=1', thumb: 'https://picsum.photos/400/600?random=1', tags: ['Nature', 'Landscape'] },
+      { title: 'Ocean Waves', image: 'https://picsum.photos/800/1200?random=2', thumb: 'https://picsum.photos/400/600?random=2', tags: ['Nature', 'Ocean'] },
+      { title: 'City Lights', image: 'https://picsum.photos/800/1200?random=3', thumb: 'https://picsum.photos/400/600?random=3', tags: ['Urban', 'Night'] },
+      { title: 'Forest Path', image: 'https://picsum.photos/800/1200?random=4', thumb: 'https://picsum.photos/400/600?random=4', tags: ['Nature', 'Forest'] },
+      { title: 'Desert Dunes', image: 'https://picsum.photos/800/1200?random=5', thumb: 'https://picsum.photos/400/600?random=5', tags: ['Nature', 'Desert'] },
+      { title: 'Urban Architecture', image: 'https://picsum.photos/800/1200?random=6', thumb: 'https://picsum.photos/400/600?random=6', tags: ['Urban', 'Architecture'] },
+      { title: 'Night Sky', image: 'https://picsum.photos/800/1200?random=7', thumb: 'https://picsum.photos/400/600?random=7', tags: ['Nature', 'Night'] },
+      { title: 'Tropical Beach', image: 'https://picsum.photos/800/1200?random=8', thumb: 'https://picsum.photos/400/600?random=8', tags: ['Nature', 'Ocean'] },
+      { title: 'Mountain Peak', image: 'https://picsum.photos/800/1200?random=9', thumb: 'https://picsum.photos/400/600?random=9', tags: ['Nature', 'Landscape'] },
+      { title: 'City Streets', image: 'https://picsum.photos/800/1200?random=10', thumb: 'https://picsum.photos/400/600?random=10', tags: ['Urban', 'Architecture'] }
+    ];
   }
   
-  // Collect unique tags
   const tagSet = new Set();
   allWallpapers.forEach(w => (w.tags || []).forEach(t => tagSet.add(t)));
   [...tagSet].sort().forEach(tag => {
