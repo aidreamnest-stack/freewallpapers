@@ -1,1 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>A Dream Art — Wallpapers</title>
+  <link rel="icon" href="https://ik.imagekit.io/h2tos5anh/photo_2025-11-07_09-52-15.jpg?updatedAt=1762489388864" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    
+    :root {
+      --bg-primary: #0d0d0d;
+      --bg-secondary: #000;
+      --bg-card: #111;
+      --text-primary: #fff;
+      --text-secondary: #ccc;
+      --border-color: #333;
+      --overlay-bg: rgba(0,0,0,0.5);
+      --card-shadow: rgba(0,0,0,.5);
+      --accent: #f39c12;
+    }
+    
+    [data-theme="light"] {
+      --bg-primary: #f5f5f5;
+      --bg-secondary: #fff;
+      --bg-card: #fff;
+      --text-primary: #000;
+      --text-secondary: #555;
+      --border-color: #ddd;
+      --overlay-bg: rgba(0,0,0,0.3);
+      --card-shadow: rgba(0,0,0,.2);
+      --accent: #e67e22;
+    }
+    
+    body{font-family:'Poppins',sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;overflow-x:hidden;transition:background 0.3s, color 0.3s}
+    header{padding:15px 20px;display:flex;flex-direction:column;align-items:center;background:var(--bg-secondary);position:relative;transition:background 0.3s}
+    .logo{font-family:'Dancing Script',cursive;font-size:2.2rem;color:var(--text-primary);text-align:center;transition:color 0.3s}
+    
+    #themeToggle{position:absolute;top:20px;left:20px;background:transparent;border:2px solid var(--text-primary);color:var(--text-primary);border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:600;z-index:1001;transition:all 0.3s}
+    #themeToggle:hover{background:var(--text-primary);color:var(--bg-secondary)}
+    
+    #hamburger{position:absolute;top:20px;right:20px;width:25px;height:20px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;z-index:1001}
+    #hamburger span{height:3px;background:var(--text-primary);border-radius:2px;transition:all 0.4s}
+    #hamburger.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+    #hamburger.active span:nth-child(2){opacity:0}
+    #hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+    #overlay{position:fixed;inset:0;background:var(--overlay-bg);opacity:0;visibility:hidden;transition:opacity 0.4s;z-index:1040}
+    #overlay.show{opacity:1;visibility:visible}
+    #sidebar{position:fixed;top:0;left:-300px;width:300px;height:100%;background:var(--bg-card);display:flex;flex-direction:column;padding-top:80px;transition:transform 0.45s cubic-bezier(.77,0,.175,1), background 0.3s;z-index:1050}
+    #sidebar.show{transform:translateX(300px)}
+    #sidebar a{color:var(--text-primary);text-decoration:none;padding:15px 25px;font-weight:600;border-bottom:1px solid var(--border-color);transition:all 0.3s}
+    #sidebar a:hover{background:var(--text-primary);color:var(--bg-secondary)}
+    
+    section{padding:40px 20px;max-width:1200px;margin:auto}
+    .section-title{font-family:'Dancing Script',cursive;font-size:2rem;margin-bottom:10px}
+    .controls{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:25px;align-items:center}
+    .search-input{padding:10px 14px;border:none;border-radius:8px;font-size:1rem;transition:background 0.3s, color 0.3s;flex:1;min-width:220px;background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border-color)}
+    
+    .category-section{margin-bottom:50px}
+    .category-header{margin-bottom:20px}
+    .category-title{font-family:'Dancing Script',cursive;font-size:1.8rem;color:var(--accent)}
+    
+    .scroll-container{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--text-secondary) var(--bg-card)}
+    .scroll-container::-webkit-scrollbar{height:8px}
+    .scroll-container::-webkit-scrollbar-track{background:var(--bg-card)}
+    .scroll-container::-webkit-scrollbar-thumb{background:var(--text-secondary);border-radius:4px}
+    .scroll-container::-webkit-scrollbar-thumb:hover{background:var(--text-primary)}
+    
+    .scroll-track{display:flex;gap:22px;padding:10px 0}
+    
+    .card-wrap{flex:0 0 auto;perspective:1000px}
+    .card-wrap.mobile{width:200px}
+    .card-wrap.desktop{width:320px}
+    
+    .card-inner{position:relative;width:100%;transform-style:preserve-3d;transition:transform .6s;cursor:pointer;border-radius:12px;overflow:hidden}
+    .card-inner.mobile{aspect-ratio:9/16}
+    .card-inner.desktop{aspect-ratio:16/9}
+    
+    .card-inner.is-flipped{transform:rotateY(180deg)}
+    .card-front,.card-back{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;overflow:hidden;box-shadow:0 8px 18px var(--card-shadow);transition:box-shadow 0.3s}
+    .card-front{transform:rotateY(0deg);z-index:2}
+    .card-front img{width:100%;height:100%;object-fit:cover}
+    .card-back{background:var(--bg-card);color:var(--text-primary);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;padding:18px;transform:rotateY(180deg) scaleX(-1);border:1px solid var(--border-color)}
+    .card-back h3{font-size:1rem;text-align:center;word-break:break-word}
+    .card-back .btn-group{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+    .card-inner.mobile .card-back{gap:10px;padding:15px}
+    .card-inner.mobile .card-back h3{font-size:0.9rem}
+    .card-inner.mobile .card-back .btn{padding:6px 12px;font-size:0.85rem}
+    .card-inner.is-flipped .card-front{transform:rotateY(180deg)}
+    .card-inner.is-flipped .card-back{transform:rotateY(360deg) scaleX(-1)}
+    .btn{padding:8px 14px;border-radius:999px;background:var(--text-primary);color:var(--bg-secondary);font-weight:700;cursor:pointer;border:none;transition:all 0.3s}
+    .btn.alt{background:transparent;border:2px solid var(--text-primary);color:var(--text-primary)}
+    .btn:hover{transform:scale(1.05)}
+    .caption{font-family:'Dancing Script',cursive;margin-top:10px;text-align:center}
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.95);z-index:2000}
+    .modal.show{display:flex}
+    .modal-img{max-width:100vw;max-height:100vh;object-fit:contain}
+    .modal-close{position:absolute;top:18px;right:18px;background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);border:2px solid var(--text-primary);color:var(--text-primary);border-radius:8px;padding:8px 16px;font-weight:700;cursor:pointer;transition:all 0.3s;font-size:1rem}
+    .modal-close:hover{background:var(--text-primary);color:var(--bg-secondary)}
+    footer{background:var(--bg-secondary);padding:18px;text-align:center;color:var(--text-secondary);margin-top:40px;transition:background 0.3s, color 0.3s}
+    footer a{color:var(--text-primary);text-decoration:none;margin:0 6px;transition:color 0.3s}
+    
+    @media (max-width: 768px) {
+      .card-wrap.mobile{width:160px}
+      .card-wrap.desktop{width:260px}
+      #themeToggle{font-size:0.85rem;padding:6px 10px}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <button id="themeToggle">☀️ Light</button>
+  <h1 class="logo">A Dream Art</h1>
+  <div id="hamburger"><span></span><span></span><span></span></div>
+</header>
+
+<div id="overlay"></div>
+<div id="sidebar">
+  <a href="/">Home</a>
+  <a href="/wallpapers/">Wallpapers</a>
+  <a href="/about/">About</a>
+  <a href="/contact/">Contact</a>
+  <a href="/privacy/">Privacy Policy</a>
+</div>
+
+<section>
+  <h2 class="section-title">Free Wallpapers</h2>
+  <div class="controls">
+    <input type="text" id="searchInput" class="search-input" placeholder="Search wallpapers...">
+  </div>
+  <div id="carouselContainer"></div>
+</section>
+
+<div id="modal" class="modal">
+  <button id="modalClose" class="modal-close">Close</button>
+  <img id="modalImg" class="modal-img" alt="preview">
+</div>
+
+<footer>
+  <p>&copy; 2025 A Dream Art. All rights reserved.</p>
+</footer>
+
+<script>
+// Theme Toggle
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('theme') || 'dark';
+document.documentElement.setAttribute('data-theme', savedTheme);
+themeToggle.textContent = savedTheme === 'light' ? '🌙 Dark' : '☀️ Light';
+
+themeToggle.onclick = () => {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  themeToggle.textContent = newTheme === 'light' ? '🌙 Dark' : '☀️ Light';
+};
+
+// Hamburger Menu
+const hamburger = document.getElementById('hamburger');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+hamburger.onclick = () => {
+  hamburger.classList.toggle('active');
+  sidebar.classList.toggle('show');
+  overlay.classList.toggle('show');
+};
+overlay.onclick = () => {
+  hamburger.classList.remove('active');
+  sidebar.classList.remove('show');
+  overlay.classList.remove('show');
+};
+sidebar.querySelectorAll('a').forEach(a => a.onclick = () => {
+  hamburger.classList.remove('active');
+  sidebar.classList.remove('show');
+  overlay.classList.remove('show');
+});
+
+// Modal
+const modal = document.getElementById('modal');
+const modalImg = document.getElementById('modalImg');
+const modalClose = document.getElementById('modalClose');
+
+function openModal(src) {
+  modalImg.src = src;
+  modal.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  modal.classList.remove('show');
+  modalImg.src = '';
+  document.body.style.overflow = '';
+}
+
+modalClose.onclick = closeModal;
+modal.onclick = e => {
+  if (e.target === modal) closeModal();
+};
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && modal.classList.contains('show')) closeModal();
+});
+
+// Download Function
+async function forceDownload(url, name) {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error('Download failed:', error);
+    window.open(url, '_blank');
+  }
+}
+
+function createScrollSection(category, wallpapers, type) {
+  const section = document.createElement('div');
+  section.className = 'category-section';
+  
+  const header = document.createElement('div');
+  header.className = 'category-header';
+  header.innerHTML = `<h3 class="category-title">${category}</h3>`;
+  
+  const scrollContainer = document.createElement('div');
+  scrollContainer.className = 'scroll-container';
+  
+  const track = document.createElement('div');
+  track.className = 'scroll-track';
+  
+  wallpapers.forEach(it => {
+    const wrap = document.createElement('div');
+    wrap.className = `card-wrap ${type}`;
+    wrap.innerHTML = `
+      <div class="card-inner ${type}">
+        <div class="card-front"><img src="${it.thumb || it.image}" alt="${it.title || 'Wallpaper'}"></div>
+        <div class="card-back">
+          <h3>${it.title || ''}</h3>
+          <div class="btn-group">
+            <button class="btn preview">Preview</button>
+            <button class="btn alt download">Download</button>
+          </div>
+        </div>
+      </div>
+      <div class="caption">${it.title || ''}</div>
+    `;
+    track.appendChild(wrap);
+    
+    const inner = wrap.querySelector('.card-inner');
+    inner.onclick = e => {
+      if (e.target.closest('button')) return;
+      inner.classList.toggle('is-flipped');
+    };
+    
+    wrap.querySelector('.preview').onclick = e => {
+      e.stopPropagation();
+      openModal(it.image);
+    };
+    wrap.querySelector('.download').onclick = e => {
+      e.stopPropagation();
+      forceDownload(it.image, it.title + '.jpg');
+    };
+  });
+  
+  scrollContainer.appendChild(track);
+  section.appendChild(header);
+  section.appendChild(scrollContainer);
+  
+  return section;
+}
+
+// Search
+const searchInput = document.getElementById('searchInput');
+const carouselContainer = document.getElementById('carouselContainer');
+
+let allWallpapers = [];
+
+function buildSections(wallpapers) {
+  carouselContainer.innerHTML = '';
+  
+  const mobileWallpapers = wallpapers.filter(w => (w.tags || []).includes('Mobile'));
+  const desktopWallpapers = wallpapers.filter(w => (w.tags || []).includes('Desktop'));
+  
+  if (mobileWallpapers.length > 0) {
+    const mobileSection = createScrollSection('Mobile Wallpapers', mobileWallpapers, 'mobile');
+    carouselContainer.appendChild(mobileSection);
+  }
+  
+  if (desktopWallpapers.length > 0) {
+    const desktopSection = createScrollSection('Desktop Wallpapers', desktopWallpapers, 'desktop');
+    carouselContainer.appendChild(desktopSection);
+  }
+}
+
+function updateFilters() {
+  const q = searchInput.value.toLowerCase();
+  
+  const filtered = allWallpapers.filter(w => {
+    return w.title.toLowerCase().includes(q) || (w.description || '').toLowerCase().includes(q);
+  });
+  
+  buildSections(filtered);
+}
+
+searchInput.oninput = updateFilters;
+
+// Load wallpapers
+(async () => {
+  try {
+    const res = await fetch('wallpapers.json');
+    allWallpapers = await res.json();
+  } catch (err) {
+    // Sample data
+    allWallpapers = [
+      { title: 'Mountain Sunset', image: 'https://picsum.photos/1080/1920?random=1', thumb: 'https://picsum.photos/540/960?random=1', tags: ['Mobile'] },
+      { title: 'Ocean Waves', image: 'https://picsum.photos/1080/1920?random=2', thumb: 'https://picsum.photos/540/960?random=2', tags: ['Mobile'] },
+      { title: 'City Lights', image: 'https://picsum.photos/1080/1920?random=3', thumb: 'https://picsum.photos/540/960?random=3', tags: ['Mobile'] },
+      { title: 'Forest Path', image: 'https://picsum.photos/1080/1920?random=4', thumb: 'https://picsum.photos/540/960?random=4', tags: ['Mobile'] },
+      { title: 'Desert Dunes', image: 'https://picsum.photos/1080/1920?random=5', thumb: 'https://picsum.photos/540/960?random=5', tags: ['Mobile'] },
+      { title: 'Urban Architecture', image: 'https://picsum.photos/1920/1080?random=6', thumb: 'https://picsum.photos/960/540?random=6', tags: ['Desktop'] },
+      { title: 'Night Sky', image: 'https://picsum.photos/1920/1080?random=7', thumb: 'https://picsum.photos/960/540?random=7', tags: ['Desktop'] },
+      { title: 'Tropical Beach', image: 'https://picsum.photos/1920/1080?random=8', thumb: 'https://picsum.photos/960/540?random=8', tags: ['Desktop'] },
+      { title: 'Mountain Peak', image: 'https://picsum.photos/1920/1080?random=9', thumb: 'https://picsum.photos/960/540?random=9', tags: ['Desktop'] },
+      { title: 'City Streets', image: 'https://picsum.photos/1920/1080?random=10', thumb: 'https://picsum.photos/960/540?random=10', tags: ['Desktop'] }
+    ];
+  }
+  
+  buildSections(allWallpapers);
+})();
+
+// Fix sidebar link navigation on subpages
+document.querySelectorAll('#sidebar a').forEach(link => {
+  link.addEventListener('click', (e) => {
+    const href = link.getAttribute('href');
+    if (href.startsWith('/')) {
+      e.preventDefault();
+      const fullURL = window.location.origin + '/adreamart' + href;
+      window.location.href = fullURL;
+    }
+  });
+});
+</script>
+</body>
+</html>
