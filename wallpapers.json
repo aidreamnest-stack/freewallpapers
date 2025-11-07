@@ -1,152 +1,27 @@
 [
   {
-    "id": 101,
-    "title": "Mountain Sunrise",
-    "category": "nature",
-    "tags": ["mountain", "sunrise", "landscape"],
-    "colors": ["orange", "blue"],
-    "sizes": {
-      "original": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80",
-      "1080p": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1280&q=80",
-      "mobile": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=720&q=80"
-    },
-    "downloads": 245,
-    "featured": true,
-    "date": "2025-01-20"
+    "image": "https://ik.imagekit.io/lbmgfujrk/wallpapers/wall1_1920.jpg",
+    "thumb": "https://ik.imagekit.io/lbmgfujrk/wallpapers/thumb_wall1.jpg",
+    "title": "Sunset Over Dreamland",
+    "description": "4K • A Dream Art",
+    "filename": "sunset_dreamland.jpg",
+    "ext": ".jpg",
+    "caption": "Sunset Dream"
   },
   {
-    "id": 102,
-    "title": "Cyberpunk Night",
-    "category": "city",
-    "tags": ["cyberpunk", "neon", "night", "urban"],
-    "colors": ["pink", "purple", "blue"],
-    "sizes": {
-      "original": "https://images.unsplash.com/photo-1514565131-fce0801e5785?w=1920&q=80",
-      "1080p": "https://images.unsplash.com/photo-1514565131-fce0801e5785?w=1280&q=80",
-      "mobile": "https://images.unsplash.com/photo-1514565131-fce0801e5785?w=720&q=80"
-    },
-    "downloads": 532,
-    "featured": false,
-    "date": "2025-01-19"
+    "image": "https://ik.imagekit.io/lbmgfujrk/wallpapers/wall2_1920.jpg",
+    "thumb": "https://ik.imagekit.io/lbmgfujrk/wallpapers/thumb_wall2.jpg",
+    "title": "Cloud Village",
+    "description": "AMOLED Friendly",
+    "filename": "cloud_village.jpg",
+    "caption": "Cloud Village"
   },
   {
-    "id": 103,
-    "title": "Minimal Gradient",
-    "category": "minimal",
-    "tags": ["gradient", "abstract", "clean"],
-    "colors": ["pink", "purple"],
-    "sizes": {
-      "original": "https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=1920&q=80",
-      "1080p": "https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=1280&q=80",
-      "mobile": "https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=720&q=80"
-    },
-    "downloads": 189,
-    "featured": false,
-    "date": "2025-01-18"
-  },
-  {
-    "id": 104,
-    "title": "Forest Path",
-    "category": "nature",
-    "tags": ["forest", "path", "trees", "green"],
-    "colors": ["green"],
-    "sizes": {
-      "original": "https://images.unsplash.com/photo-1511497584788-876760111969?w=1920&q=80",
-      "1080p": "https://images.unsplash.com/photo-1511497584788-876760111969?w=1280&q=80",
-      "mobile": "https://images.unsplash.com/photo-1511497584788-876760111969?w=720&q=80"
-    },
-    "downloads": 324,
-    "featured": true,
-    "date": "2025-01-17"
-  },
-  {
-    "id": 105,
-    "title": "Abstract Waves",
-    "category": "abstract",
-    "tags": ["waves", "colorful", "digital"],
-    "colors": ["purple", "blue", "pink"],
-    "sizes": {
-      "original": "https://images.unsplash.com/photo-1550859492-d5da9d8e45f3?w=1920&q=80",
-      "1080p": "https://images.unsplash.com/photo-1550859492-d5da9d8e45f3?w=1280&q=80",
-      "mobile": "https://images.unsplash.com/photo-1550859492-d5da9d8e45f3?w=720&q=80"
-    },
-    "downloads": 156,
-    "featured": false,
-    "date": "2025-01-16"
-  },
-  {
-    "id": 106,
-    "title": "Ocean Sunset",
-    "category": "nature",
-    "tags": ["ocean", "sunset", "beach"],
-    "colors": ["orange", "red", "yellow"],
-    "sizes": {
-      "original": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80",
-      "1080p": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1280&q=80",
-      "mobile": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=720&q=80"
-    },
-    "downloads": 678,
-    "featured": true,
-    "date": "2025-01-15"
-  },
-  {
-    "id": 107,
-    "title": "Galaxy Nebula",
-    "category": "space",
-    "tags": ["space", "galaxy", "stars", "nebula"],
-    "colors": ["purple", "blue"],
-    "sizes": {
-      "original": "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=1920&q=80",
-      "1080p": "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=1280&q=80",
-      "mobile": "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=720&q=80"
-    },
-    "downloads": 423,
-    "featured": false,
-    "date": "2025-01-14"
-  },
-  {
-    "id": 108,
-    "title": "Gaming RGB",
-    "category": "gaming",
-    "tags": ["gaming", "rgb", "keyboard", "setup"],
-    "colors": ["red", "purple", "blue"],
-    "sizes": {
-      "original": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=1920&q=80",
-      "1080p": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=1280&q=80",
-      "mobile": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=720&q=80"
-    },
-    "downloads": 891,
-    "featured": true,
-    "date": "2025-01-13"
-  },
-  {
-    "id": 109,
-    "title": "Cherry Blossoms",
-    "category": "anime",
-    "tags": ["anime", "sakura", "cherry blossom", "japan"],
-    "colors": ["pink"],
-    "sizes": {
-      "original": "https://images.unsplash.com/photo-1522383225653-ed111181a951?w=1920&q=80",
-      "1080p": "https://images.unsplash.com/photo-1522383225653-ed111181a951?w=1280&q=80",
-      "mobile": "https://images.unsplash.com/photo-1522383225653-ed111181a951?w=720&q=80"
-    },
-    "downloads": 567,
-    "featured": false,
-    "date": "2025-01-12"
-  },
-  {
-    "id": 110,
-    "title": "City Skyline",
-    "category": "city",
-    "tags": ["city", "skyline", "buildings", "urban"],
-    "colors": ["blue"],
-    "sizes": {
-      "original": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1920&q=80",
-      "1080p": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1280&q=80",
-      "mobile": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=720&q=80"
-    },
-    "downloads": 734,
-    "featured": true,
-    "date": "2025-01-11"
+    "image": "https://ik.imagekit.io/lbmgfujrk/wallpapers/wall3_1920.jpg",
+    "thumb": "https://ik.imagekit.io/lbmgfujrk/wallpapers/thumb_wall3.jpg",
+    "title": "Golden Hour Forest",
+    "description": "Minimal • 4K",
+    "filename": "golden_forest.jpg",
+    "caption": "Golden Forest"
   }
 ]
