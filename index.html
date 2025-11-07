@@ -191,12 +191,29 @@ modal.onclick = e => {
 
 // Download Function
 async function forceDownload(url, name) {
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = name;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+  try {
+    // Fetch the image as a blob to handle CORS
+    const response = await fetch(url);
+    const blob = await response.blob();
+    
+    // Create a temporary URL for the blob
+    const blobUrl = URL.createObjectURL(blob);
+    
+    // Create and trigger download
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    
+    // Cleanup
+    document.body.removeChild(a);
+    URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error('Download failed:', error);
+    // Fallback: open in new tab if fetch fails
+    window.open(url, '_blank');
+  }
 }
 
 // Carousel State
@@ -361,16 +378,7 @@ window.addEventListener('resize', () => {
     allWallpapers = await res.json();
   } catch (err) {
     // Sample data for demonstration
-    allWallpapers = [
-      { title: 'Mountain Sunset', image: 'https://picsum.photos/800/1200?random=1', thumb: 'https://picsum.photos/400/600?random=1', tags: ['Nature', 'Landscape'] },
-      { title: 'Ocean Waves', image: 'https://picsum.photos/800/1200?random=2', thumb: 'https://picsum.photos/400/600?random=2', tags: ['Nature', 'Ocean'] },
-      { title: 'City Lights', image: 'https://picsum.photos/800/1200?random=3', thumb: 'https://picsum.photos/400/600?random=3', tags: ['Urban', 'Night'] },
-      { title: 'Forest Path', image: 'https://picsum.photos/800/1200?random=4', thumb: 'https://picsum.photos/400/600?random=4', tags: ['Nature', 'Forest'] },
-      { title: 'Desert Dunes', image: 'https://picsum.photos/800/1200?random=5', thumb: 'https://picsum.photos/400/600?random=5', tags: ['Nature', 'Desert'] },
-      { title: 'Urban Architecture', image: 'https://picsum.photos/800/1200?random=6', thumb: 'https://picsum.photos/400/600?random=6', tags: ['Urban', 'Architecture'] },
-      { title: 'Night Sky', image: 'https://picsum.photos/800/1200?random=7', thumb: 'https://picsum.photos/400/600?random=7', tags: ['Nature', 'Night'] },
-      { title: 'Tropical Beach', image: 'https://picsum.photos/800/1200?random=8', thumb: 'https://picsum.photos/400/600?random=8', tags: ['Nature', 'Ocean'] }
-    ];
+    
   }
   
   // Collect unique tags
